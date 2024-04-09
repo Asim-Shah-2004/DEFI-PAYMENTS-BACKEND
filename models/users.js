@@ -4,6 +4,7 @@ const userSchema = new mongoose.Schema({
     username: {
         type: String,
         required: [true, "Please enter username"],
+        
     },
     password: {
         type: String,
@@ -12,6 +13,5 @@ const userSchema = new mongoose.Schema({
 }, { collection: 'User' }); 
 
 const User = mongoose.model("User", userSchema);
-
-export default User;
+module.exports = User;
 
