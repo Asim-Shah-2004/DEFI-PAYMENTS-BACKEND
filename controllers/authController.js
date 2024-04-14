@@ -6,19 +6,21 @@ res.send('sign up');
 }
 
 module.exports.signup_post = async (req,res) => {
-    const {username,password} = req.body;
-    if (!username || !password)
-    return res.send({ 'message': 'Username and password are required.' });
+    const {name,email,password} = req.body;
+    if(!name)
+    return res.send({message: 'Please enter your name'})
+    if (!email || !password)
+    return res.send({ 'message': 'Email and password are required.' });
 
-    const duplicate = await User.findOne({username});
+    const duplicate = await User.findOne({email});
 
     if(duplicate) 
-    return res.send({message:"user already exists"});
+    return res.send({message:"User already exists"});
 
     try{
         const hashedPassword = await bcrypt.hash(password, 10);
-    const user = await User.create({username, password: hashedPassword});
-    res.status(201).json(user);
+    const user = await User.create({name,email, password: hashedPassword});
+    res.redirect('/home');
     }
     catch(err){
     res.status(400).send(err.message)
@@ -30,20 +32,23 @@ module.exports.login_get = (req,res) => {
 }
 
 module.exports.login_post = async (req,res) => {
-    const {username,password} = req.body;
-    const user = await User.findOne({username});
+    const {email,password} = req.body;
+    const user = await User.findOne({email});
     if(!user)
     return res.status(400).send('No user found');
 
     if (!password) 
     return res.send('password is required.');
-
+   if(user.password){
     const match = await bcrypt.compare(password,user.password);
     if(match){
-    res.status(200).json(`User ${user} successfully logged in`);
+        res.redirect('/home');
     }
     else{
-        res.status(401).send('Wrong Password');
+        res.status(401).send('Password is incorrect');
+    }}
+    else{
+        res.status(400).send('You tried signing in with a different authentication method than the one you used during signup. Please try again using your original authentication method.');
     }
     
 }
