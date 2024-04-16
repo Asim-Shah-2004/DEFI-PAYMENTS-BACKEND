@@ -1,10 +1,6 @@
 const User = require('../models/users');
 const bcrypt = require('bcrypt');
 
-module.exports.signup_get = (req,res) => {
-res.send('sign up');
-}
-
 module.exports.signup_post = async (req,res) => {
     const {name,email,password} = req.body;
     if(!name)
@@ -25,10 +21,6 @@ module.exports.signup_post = async (req,res) => {
     catch(err){
     res.status(400).send(err.message)
     }
-}
-
-module.exports.login_get = (req,res) => {
-    res.send('login page');
 }
 
 module.exports.login_post = async (req,res) => {
